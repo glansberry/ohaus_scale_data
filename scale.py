@@ -3,8 +3,14 @@
 # you must install pyserial (sudo easy_install pyserial)
 import serial
 import time
+import sys
 #scale = serial.Serial('/dev/tty.usbserial-00002014', 9600, bytesize=8, stopbits=1, timeout=None)
 
+if len(sys.argv) < 2:
+    print 'missing port'
+    exit()
+
+port = sys.argv[1]
 save_file = time.strftime("weigh_data%Y%m%d%H%M%S.csv", time.localtime())
 with serial.Serial() as scale:
     scale.baudrate = 9600
@@ -12,7 +18,7 @@ with serial.Serial() as scale:
     scale.bytesize = 8
     scale.stopbits = 1
     scale.timeout = 1
-    scale.port = '/dev/ttyUSB0'
+    scale.port = port
     scale.open()
     scale.reset_input_buffer()
     print "Initializing Scale - please wait"
