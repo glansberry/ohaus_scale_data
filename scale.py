@@ -23,16 +23,17 @@ with serial.Serial() as scale:
     scale.reset_input_buffer()
     print "Initializing Scale - please wait"
 
-    time.sleep(0.1)
-    scale.write(b'0P\r\n')  #auto print off
+    scale.write(b'1U\r\n')  #spx set to grams
+    time.sleep(0.5)
+    scale.write(b'0M\r\n')  #scout pro set to grams
     time.sleep(0.5)
     print scale.readline()
-    scale.write(b'1U\r\n')  #set to grams
+    scale.write(b'SLP\r\n')  #spx autoprint on nonzero stability
+    time.sleep(0.5)
+    scale.write(b'SA\r\n')  #scout pro autoprint on nonzero stability
     time.sleep(0.5)
     print scale.readline()
-    scale.write(b'SLP\r\n')  #autoprint on nonzero stability
-    time.sleep(0.5)
-    print scale.readline()
+    scale.reset_input_buffer()
 
     print "Scale Initialized - appending to file: " + save_file
     counter = 0;
