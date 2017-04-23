@@ -1,10 +1,13 @@
 #!/usr/bin/python2
 #
 # you must install pyserial (sudo easy_install pyserial)
+#
+# Scout pro manual with commands here: http://dmx.ohaus.com/WorkArea/downloadasset.aspx?id=3600
+# Scout SPX manusl http://dmx.ohaus.com/WorkArea/showcontent.aspx?id=4294974227
+
 import serial
 import time
 import sys
-#scale = serial.Serial('/dev/tty.usbserial-00002014', 9600, bytesize=8, stopbits=1, timeout=None)
 
 if len(sys.argv) < 2:
     print 'missing port'
