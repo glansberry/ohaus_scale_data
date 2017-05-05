@@ -13,18 +13,20 @@ import os
 import random
 
 def important(counter, period):
-    randomphrase = ["I'm tired, are you?", "that looks delicious", "wait, who are you again?",
-        "my name is scale, what's yours?", "this is so fun", "want to come over my place when we're done?",
-        "kwantos boatayas tienes me ameego"]
+    randomphrase = ["I#'m# t#i#re###d,# a#r#e #y###o#u#?", "t#h#####a#t# l#o##o#k#s# d###e#l###i##ci#o#u#s", "#w@a#i#t##,###w@h@o @@@a@r@e# #y@o@@u ag@a@##i#n#?",
+        "#m###y@ @n@@a##m##e i###s @@@s@c##a#l@@e, w@@@###at##'s yo###@u@@r##s?", "t#h##@@i@s i@s @@@so@ f@@@u#n", "w##a@n@t## #t##o# c@@@@o@m@e o##v#e@@r m@@y p#@l#@a#@c#@e w#@h#@e#@n w#@e#@'re d@@@one?",
+        "k#w#a#nt#os bo#a#t#a#y#as t@i@e@n#e#s m@#e a@@m##e##e##g#o"]
     #if say does not work, try espeak
     if counter % period == 0:
-            command = 'say ' + '\"' + random.choice(randomphrase) + '\"'
+
+            command = 'say "%s"' % (random.choice(randomphrase).replace('#', '').replace('@',''),)
             os.system(command)
 
 parser = optparse.OptionParser()
 parser.add_option('-m', '--min-weight', help='below this weight, bell will sound')
 parser.add_option('-o', '--output-file', help='file to write output')
 parser.add_option('-p', '--serial-port', help='serial port to use')
+parser.add_option('-r', '--random-freq', help='frequency of random message default 100')
 (options, args) = parser.parse_args()
 
 if options.output_file is None:
@@ -45,6 +47,11 @@ if options.min_weight:
         print 'warning: min-weight is out of range: ' + str(minweight)
 else:
     minweight = 0;
+
+if options.random_freq is None:
+    randperiod = 100
+else:
+    randperiod = int(options.random_freq)
 
 with serial.Serial() as scale:
     scale.baudrate = 9600
@@ -85,12 +92,12 @@ with serial.Serial() as scale:
                     f.write(scale_out)
                     if g < minweight:
                         print "\a\033[31m" + str(counter) + ': *LOW*' + str(g) + 'g' + "\033[0m"
-                        phrase = "Low Weight Of " + str(g) + " Grams"
-                        command = 'say ' + '\"' + phrase + '\"'
+                        phrase =  "Low Weight Of %.1f  Grams" % (g,)
+                        command = 'say "%s"' % (phrase,)
                         os.system(command)
                     else:
                         print str(counter) + ': ' + str(g) + 'g'
-                    important(counter, 100)
+                    important(counter, randperiod)
 
             else: time.sleep(0.1)
         f.close()
