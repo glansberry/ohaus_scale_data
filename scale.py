@@ -45,6 +45,10 @@ if options.min_weight:
     minweight = float(options.min_weight)
     if minweight > 1000 or minweight < 500:
         print 'warning: min-weight is out of range: ' + str(minweight)
+    phrase =  "I'll let you know if weight is less than %.1f  Grams" % (minweight,)
+    command = 'say "%s"' % (phrase,)
+    os.system(command)
+
 else:
     minweight = 0;
 
