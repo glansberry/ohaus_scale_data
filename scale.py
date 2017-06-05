@@ -16,10 +16,9 @@ def important(counter, period):
     randomphrase = ["I#'m# t#i#re###d,# a#r#e #y###o#u#?", "t#h#####a#t# l#o##o#k#s# d###e#l###i##ci#o#u#s", "#w@a#i#t##,###w@h@o @@@a@r@e# #y@o@@u ag@a@##i#n#?",
         "#m###y@ @n@@a##m##e i###s @@@s@c##a#l@@e, w@@@###at##'s yo###@u@@r##s?", "t#h##@@i@s i@s @@@so@ f@@@u#n", "w##a@n@t## #t##o# c@@@@o@m@e o##v#e@@r m@@y p#@l#@a#@c#@e w#@h#@e#@n w#@e#@'re d@@@one?",
         "k#w#a#nt#os bo#a#t#a#y#as t@i@e@n#e#s m@#e a@@m##e##e##g#o"]
-    #if say does not work, try espeak
     if counter % period == 0:
 
-            command = 'say "%s"' % (random.choice(randomphrase).replace('#', '').replace('@',''),)
+            command = '%s "%s"' % (speak_command, random.choice(randomphrase).replace('#', '').replace('@',''),)
             os.system(command)
 
 parser = optparse.OptionParser()
@@ -27,7 +26,14 @@ parser.add_option('-m', '--min-weight', help='below this weight, bell will sound
 parser.add_option('-o', '--output-file', help='file to write output')
 parser.add_option('-p', '--serial-port', help='serial port to use')
 parser.add_option('-r', '--random-freq', help='frequency of random message default 100')
+parser.add_option('-q', '--quiet', help='do not talk')
+
 (options, args) = parser.parse_args()
+
+#if say does not work, try espeak
+speak_command = 'say'
+if options.quiet:
+    speak_command = 'echo'
 
 if options.output_file is None:
     save_file = time.strftime("weigh_data%Y%m%d%H%M%S.csv", time.localtime())
@@ -46,7 +52,7 @@ if options.min_weight:
     if minweight > 1000 or minweight < 500:
         print 'warning: min-weight is out of range: ' + str(minweight)
     phrase =  "I'll let you know if weight is less than %.1f  Grams" % (minweight,)
-    command = 'say "%s"' % (phrase,)
+    command = '%s "%s"' % (speak_command, phrase,)
     os.system(command)
 
 else:
@@ -97,7 +103,7 @@ with serial.Serial() as scale:
                     if g < minweight:
                         print "\a\033[31m" + str(counter) + ': *LOW*' + str(g) + 'g' + "\033[0m"
                         phrase =  "Low Weight Of %.1f  Grams" % (g,)
-                        command = 'say "%s"' % (phrase,)
+                        command = '%s "%s"' % (speak_command, phrase,)
                         os.system(command)
                     else:
                         print str(counter) + ': ' + str(g) + 'g'
