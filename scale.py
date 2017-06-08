@@ -88,7 +88,7 @@ with serial.Serial() as scale:
 
     print "Scale Initialized - appending to file: " + save_file
     counter = 0;
-    with open(save_file, 'w+') as f:
+    with open(save_file, 'a') as f:
         while True:
             if scale.in_waiting > 3:
                 grams = scale.readline()
